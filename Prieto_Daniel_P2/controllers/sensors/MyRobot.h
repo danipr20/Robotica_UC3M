@@ -15,13 +15,15 @@
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/Compass.hpp>
+#include <webots/DistanceSensor.hpp>
 #include <math.h>
 
 using namespace std;
 using namespace webots;
 
 #define MAX_SPEED       10
-#define DESIRED_ANGLE   10
+#define DESIRED_ANGLE   0
+#define NUM_DISTANCE_SENSOR 16
 
         
 class MyRobot : public Robot {
@@ -52,6 +54,7 @@ class MyRobot : public Robot {
 
     private:
         
+        const double _infinity = numeric_limits<double>::infinity();
         // The time step
         int _time_step;
         
@@ -60,6 +63,7 @@ class MyRobot : public Robot {
 
         // Sensors
         Compass *_my_compass;
+        DistanceSensor *_distance_sensor[NUM_DISTANCE_SENSOR];
         
         // Motors
         Motor *_left_wheel_motor;

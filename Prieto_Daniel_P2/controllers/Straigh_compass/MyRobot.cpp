@@ -56,12 +56,15 @@ void MyRobot::run()
             // turn right
             _left_speed = MAX_SPEED;
             _right_speed = MAX_SPEED - 3;
+            cout << "Girando Derecha "   << endl;
         }
         else {
             if (compass_angle > (DESIRED_ANGLE + 2)) {
                 // turn left
                 _left_speed = MAX_SPEED - 3;
                 _right_speed = MAX_SPEED;
+               cout << "Girando Izquierda "   << endl;
+
             }
             else {
                 // move straight forward
@@ -72,8 +75,8 @@ void MyRobot::run()
         }
 
         // set the motor position to non-stop moving
-        _left_wheel_motor->setPosition(INFINITY);
-        _right_wheel_motor->setPosition(INFINITY);
+        _left_wheel_motor->setPosition(_infinity);
+        _right_wheel_motor->setPosition(_infinity);
         
         // set the motor speeds
         _left_wheel_motor->setVelocity(_left_speed);

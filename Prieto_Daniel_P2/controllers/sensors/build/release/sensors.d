@@ -1,4 +1,4 @@
-build/release/Steaight_compass.o: Steaight_compass.cpp MyRobot.h \
+build/release/sensors.o: sensors.cpp MyRobot.h \
  C:\Users\danip\AppData\Local\Programs\Webots/include/controller/cpp/webots/Robot.hpp \
  C:\Users\danip\AppData\Local\Programs\Webots/include/controller/cpp/webots/Motor.hpp \
  C:\Users\danip\AppData\Local\Programs\Webots/include/controller/cpp/webots/Device.hpp \

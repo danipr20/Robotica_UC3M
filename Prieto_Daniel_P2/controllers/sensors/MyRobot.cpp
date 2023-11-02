@@ -23,6 +23,15 @@ MyRobot::MyRobot() : Robot()
     _my_compass = getCompass("compass");
     _my_compass->enable(_time_step);
     
+    
+    _distance_sensor[0]= getDistanceSensor("ds0");
+    _distance_sensor[0]-> enable(_time_step);
+    _distance_sensor[1]= getDistanceSensor("ds3");
+    _distance_sensor[1]-> enable(_time_step);
+    _distance_sensor[2]= getDistanceSensor("ds13");
+    _distance_sensor[2]-> enable(_time_step);        
+    
+    
     _left_wheel_motor = getMotor("left wheel motor");
     _right_wheel_motor = getMotor("right wheel motor");
 }
@@ -33,6 +42,11 @@ MyRobot::~MyRobot()
 {
     // disable devices
     _my_compass->disable();
+    
+    for (int i=0; i<NUM_DISTANCE_SENSOR; i++) {
+      _distance_sensor[i]->disable();}
+
+
 }
 
 //////////////////////////////////////////////
@@ -40,6 +54,8 @@ MyRobot::~MyRobot()
 void MyRobot::run()
 {
     double compass_angle;
+    double ir_frontal =0.0, ir_izq=0.0,ir_der=0.0;
+
 
     while (step(_time_step) != -1) {
         // read the sensors
@@ -50,18 +66,33 @@ void MyRobot::run()
 
         // print sensor values to console
         cout << "Compass angle (degrees): " << compass_angle << endl;
+        
+        
+        //Sensor de distancia
+        ir_frontal=_distance_sensor[0]->getValue();
+        ir_izq=_distance_sensor[1]->getValue();
+        ir_der=_distance_sensor[2]->getValue();
+        
+        
+        
+        cout << "Ir_frontal: " << ir_frontal << " Ir_der: " << ir_der << " Ir_izq: " << ir_izq <<endl;
+
+ 
 
         // simple bang-bang control
         if (compass_angle < (DESIRED_ANGLE - 2)) {
             // turn right
             _left_speed = MAX_SPEED;
             _right_speed = MAX_SPEED - 3;
+            cout << "Girando Derecha "   << endl;
         }
         else {
             if (compass_angle > (DESIRED_ANGLE + 2)) {
                 // turn left
                 _left_speed = MAX_SPEED - 3;
                 _right_speed = MAX_SPEED;
+               cout << "Girando Izquierda "   << endl;
+
             }
             else {
                 // move straight forward
@@ -72,8 +103,8 @@ void MyRobot::run()
         }
 
         // set the motor position to non-stop moving
-        _left_wheel_motor->setPosition(INFINITY);
-        _right_wheel_motor->setPosition(INFINITY);
+        _left_wheel_motor->setPosition(_infinity);
+        _right_wheel_motor->setPosition(_infinity);
         
         // set the motor speeds
         _left_wheel_motor->setVelocity(_left_speed);

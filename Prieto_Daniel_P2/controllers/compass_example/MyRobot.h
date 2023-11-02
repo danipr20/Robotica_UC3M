@@ -21,7 +21,7 @@ using namespace std;
 using namespace webots;
 
 #define MAX_SPEED       10
-#define DESIRED_ANGLE   10
+#define DESIRED_ANGLE   0
 
         
 class MyRobot : public Robot {
@@ -52,6 +52,7 @@ class MyRobot : public Robot {
 
     private:
         
+        const double _infinity = numeric_limits<double>::infinity();
         // The time step
         int _time_step;
         

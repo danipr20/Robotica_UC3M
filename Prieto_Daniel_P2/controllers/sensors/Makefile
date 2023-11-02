@@ -67,6 +67,8 @@
 ###
 ###-----------------------------------------------------------------------------
 
+ CXX_SOURCES = MyRobot.cpp sensors.cpp
+
 ### Do not modify: this includes Webots global Makefile.include
 space :=
 space +=
