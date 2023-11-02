@@ -109,7 +109,7 @@ Floor {
 Pioneer2 {
   translation -0.71 0 0
   name "Pioneer 2(1)"
-  controller "sensors"
+  controller "wall_follower"
   extensionSlot [
     Compass {
     }
