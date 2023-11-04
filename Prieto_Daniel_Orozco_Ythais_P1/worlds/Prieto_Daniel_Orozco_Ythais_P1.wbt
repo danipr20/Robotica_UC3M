@@ -1,0 +1,123 @@
+#VRML_SIM R2019b utf8
+WorldInfo {
+  info [
+    ""
+  ]
+}
+Viewpoint {
+  orientation -0.40115696240914045 -0.8049194324223126 -0.43723883498565597 1.710678561250811
+  position -6.788801017390867 9.469235426905847 0.7325986551930281
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Solid {
+  translation 0 0.25 -2.45
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+      }
+      geometry Box {
+        size 5 0.5 0.1
+      }
+    }
+  ]
+  name "WALL 1"
+  boundingObject Box {
+    size 5 0.5 0.1
+  }
+}
+Solid {
+  translation 2.5 0.25 1.64987e-06
+  rotation 0 1 0 -1.5707996938995747
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+      }
+      geometry Box {
+        size 5 0.5 0.1
+      }
+    }
+  ]
+  name "WALL 2"
+  boundingObject Box {
+    size 5 0.5 0.1
+  }
+}
+Solid {
+  translation -2.5 0.25 0.01
+  rotation 0 1 0 1.57079
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 5 0.5 0.1
+      }
+    }
+  ]
+  name "WALL 4"
+  boundingObject Box {
+    size 5 0.5 0.1
+  }
+}
+Solid {
+  translation 0.01 0.25 2.5
+  rotation 0 1 0 -5.307179586466759e-06
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+      }
+      geometry Box {
+        size 5 0.5 0.1
+      }
+    }
+  ]
+  name "WALL 3"
+  boundingObject Box {
+    size 5 0.5 0.1
+  }
+}
+WoodenBox {
+  hidden linearVelocity_0 -6.804788563717624e-16 -0.0007834218648880737 -8.787821064198568e-16
+  hidden angularVelocity_0 -3.3833202905952838e-15 4.3922657442922206e-17 2.5647750589996616e-15
+  translation 0.6344484710263898 0.23046601066505917 -1.4118123299540355
+  rotation 0.5299949385478037 0.5299949385478038 -0.6619748712960479 -1.9720978535224123
+  name "wooden box(1)"
+  size 0.5 0.5 0.5
+  mass 50
+}
+WoodenBox {
+  hidden linearVelocity_0 -5.95211925319826e-17 -0.00010122941104997237 1.5595525030141862e-17
+  hidden angularVelocity_0 1.0913936421275138e-16 -9.941627907497446e-18 2.1827872842550276e-16
+  translation 1.4020795049657522 0.2303911131780666 0.1936067661897593
+  rotation -1.1624177568745365e-17 1 -4.1956670010783905e-18 -0.23226073057275282
+  name "wooden box(2)"
+  size 0.5 0.5 0.5
+  mass 50
+}
+WoodenBox {
+  hidden linearVelocity_0 1.0048073897052885e-17 -0.0007834218648878242 -9.92948586859155e-18
+  hidden angularVelocity_0 -5.4569682106375714e-17 -2.2514449187727473e-18 -1.6370904631912724e-16
+  translation -1.80359 0.23046601066505915 -0.462824
+  rotation -2.4728544916943646e-17 1 1.5508833940749182e-18 2.8805015846809527
+  name "wooden box(3)"
+  size 0.5 0.5 0.5
+  mass 50
+}
+Pioneer2 {
+  hidden position_0_0 7871.453439982404
+  hidden position_0_1 13117.27743999038
+  hidden rotation_1 1 0 0 0.33539780643803563
+  hidden rotation_2 1 0 0 2.9361676305973563
+  translation 2.160513735503406 0 1.1245882368724744
+  rotation 0 1 0 1257.0783936240516
+  controller "Pioneer2GoForward"
+}
+Floor {
+  size 5 5
+}
