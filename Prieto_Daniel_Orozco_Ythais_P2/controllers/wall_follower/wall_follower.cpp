@@ -14,7 +14,7 @@
  */
 int main(int argc, char **argv)
 {
-    MyRobot* my_robot = new MyRobot();
+    MyRobot *my_robot = new MyRobot();
 
     my_robot->run();
 

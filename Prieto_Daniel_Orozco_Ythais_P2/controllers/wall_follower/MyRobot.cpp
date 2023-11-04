@@ -55,7 +55,6 @@ void MyRobot::run()
     double ir_frontal = 0.0, ir_izq = 0.0, ir_der = 0.0;
     bool pared_iz = 0;
     bool pared_der = 0;
-    bool esquina = 0;
 
     while (step(_time_step) != -1)
     {
@@ -77,68 +76,41 @@ void MyRobot::run()
 
         // Si se va a chocar de frente e auna pared: Girar a la derecha
         cout << " Izquierda " << pared_iz << "  Derecha " << pared_der << endl;
-        if ((ir_frontal > DISTANCIA_CHOQUE && pared_iz == 0 && pared_der == 0) || (ir_frontal > DISTANCIA_CHOQUE && ir_izq > DISTANCIA_CHOQUE))
+
+        // condicionales 04/11/23
+        if ((ir_der < DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE && ir_izq < DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE))
         {
-            // turn right
+            // movimiento de frente, ninguna pared cerca o pared a la izquierda
+            cout << "Moving forward" << endl;
             _left_speed = MAX_SPEED;
-            _right_speed = MAX_SPEED - 5;
-            cout << "Girando Derecha " << endl;
+            _right_speed = MAX_SPEED;
+        }
+        if (ir_izq > DISTANCIA_CHOQUE)
+        {
             pared_iz = 1;
             pared_der = 0;
         }
-        if (ir_frontal > DISTANCIA_CHOQUE && ir_der > DISTANCIA_CHOQUE)
+        if (ir_der > DISTANCIA_CHOQUE)
         {
-            // turn left
-            _left_speed = MAX_SPEED - 5;
-            _right_speed = MAX_SPEED;
-            cout << "Girando Derecha " << endl;
             pared_der = 1;
             pared_iz = 0;
         }
 
-        if (ir_frontal > DISTANCIA_CHOQUE && ir_der > DISTANCIA_CHOQUE && ir_izq > DISTANCIA_CHOQUE)
-        {
-            // turn right
-            _left_speed = MAX_SPEED - 5;
-            _right_speed = MAX_SPEED - 15;
-            cout << "Girando Derecha " << endl;
-            esquina = 1;
-        }
-
         if (ir_izq < DISTANCIA_CHOQUE && pared_iz == 1)
         {
-            // move straight forward
-            _left_speed = MAX_SPEED;
-            _right_speed = MAX_SPEED - 5;
+            // esquina hacia la izquierda, antes detectaba pared y ahora no
+
+            cout << "Turn left" << endl;
+            _left_speed = MAX_SPEED - 8;
+            _right_speed = MAX_SPEED - 6;
         }
 
-        /*  if(ir_izq ==0 && ir_der==0 && ir_frontal==0){
-                // move straight forward
-               pared_iz=0;
-               pared_der=0;
-               esquina=0;
-               }*/
-
-        if (ir_izq == 0 && pared_iz == 1)
+        if ((ir_der > DISTANCIA_CHOQUE) || (ir_frontal > DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal > DISTANCIA_CHOQUE))
         {
-            // move straight forward
-            _left_speed = MAX_SPEED - 5;
-            _right_speed = MAX_SPEED;
-        }
-
-        if (ir_der == 0 && pared_der == 1)
-        {
-            // move straight forward
-            _left_speed = MAX_SPEED;
-            _right_speed = MAX_SPEED - 5;
-        }
-
-        if (ir_frontal < DISTANCIA_CHOQUE && pared_iz == 0 && pared_der == 0)
-        {
-            // move straight forward
-            cout << "Moving forward" << endl;
-            _left_speed = MAX_SPEED;
-            _right_speed = MAX_SPEED;
+            // gira a la derecha
+            cout << "Turn right" << endl;
+            _left_speed = MAX_SPEED - 9;
+            _right_speed = MAX_SPEED - 11;
         }
 
         // set the motor position to non-stop moving
