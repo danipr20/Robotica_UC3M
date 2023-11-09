@@ -63,7 +63,7 @@ void MyRobot::run()
         ir_izq = _distance_sensor[1]->getValue();
         ir_der = _distance_sensor[2]->getValue();
         get_info();
-        cout << "Frontal: " << ir_frontal << endl;
+        cout << "Ir_frontal: " << ir_frontal << " Ir_der: " << ir_der << " Ir_izq: " << ir_izq << endl;
 
         if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
         {
@@ -80,7 +80,6 @@ void MyRobot::run()
             for (int i = 0; i < 100; i++)
             {
                 backward();
-                set_speed();
             }
             for (int i = 0; i < 100; i++)
             {
@@ -141,28 +140,40 @@ double MyRobot::convert_bearing_to_degrees(const double *in_vector)
 }
 
 //////////////////////////////////////////////
-void MyRobot::forward()
+void MyRobot::forward(int i)
 {
     _left_speed = MAX_SPEED;
     _right_speed = MAX_SPEED;
+    for (int z = 0; z < i; z++)
+    {
+        set_speed();
+    }
 }
-void MyRobot::set_speed()
+void MyRobot::set_speed(int i)
 {
     // set the motor speeds
     _left_wheel_motor->setVelocity(_left_speed);
     _right_wheel_motor->setVelocity(_right_speed);
 }
-void MyRobot::turn_left()
+void MyRobot::turn_left(int i)
 {
     cout << "Turn left" << endl;
     _left_speed = MAX_SPEED - 8;
     _right_speed = MAX_SPEED - 6;
+    for (int z = 0; z < i; z++)
+    {
+        set_speed();
+    }
 }
 void MyRobot::turn_right()
 {
     cout << "Turn right" << endl;
     _left_speed = MAX_SPEED - 6;
     _right_speed = MAX_SPEED - 8;
+    for (int z = 0; z < i; z++)
+    {
+        set_speed();
+    }
 }
 
 void MyRobot::get_info()
