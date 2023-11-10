@@ -26,14 +26,17 @@ using namespace webots;
 #define NUM_DISTANCE_SENSOR 16
 #define DISTANCE_LIMIT 200
 
-enum Mode
+enum Posicion
 {
-    STOP,
-    FORWARD,
-    TURN_LEFT,
-    TURN_RIGHT,
-    OBSTACLE_AVOID,
-    BLOQUEO
+
+    LIBRE,
+    BLOQUEO,
+    PAR_IZ,
+    PAR_DER,
+    PAR_FRONT,
+    ESQ_IZ,
+    ESQ_DER,
+
 };
 class MyRobot : public Robot
 {
@@ -83,7 +86,7 @@ private:
     double _left_speed, _right_speed;
 
     // WORKING MODES
-    int _mode = 0;
+    int _posicion = 0;
 
     // Sensors
     Compass *_my_compass;
