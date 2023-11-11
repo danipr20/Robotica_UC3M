@@ -45,7 +45,7 @@ void MyRobot::run()
 {
     double compass_angle;
     double ir_frontal = 0.0, ir_izq = 0.0, ir_der = 0.0;
-
+    int i = 0;
     bool pared_iz = 0;
     bool pared_der = 0;
     // set the motor position to non-stop moving
@@ -62,7 +62,7 @@ void MyRobot::run()
         ir_izq = _distance_sensor[1]->getValue();
         ir_der = _distance_sensor[2]->getValue();
         get_info();
-        cout << "Ir_frontal: " << ir_frontal << " Ir_der: " << ir_der << " Ir_izq: " << ir_izq << endl;
+        cout << " Ir_der : " << ir_der << "Ir_frontal: " << ir_frontal << " Ir_izq: " << ir_izq << endl;
 
         if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
         {
@@ -71,20 +71,19 @@ void MyRobot::run()
         }
         if (ir_frontal > DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
         {
-            cout << "ESQ_DERERECHA" << endl;
-
+            cout << "ESQ_DERERECHA_LIBRE" << endl;
             _posicion = ESQ_DER;
         }
         if (ir_frontal < DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
         {
             cout << "PAR_IZQUIERDA" << endl;
-
             _posicion = PAR_IZ;
+            pared_der = 0;
+            pared_iz = 1;
         }
         if (ir_frontal < DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
         {
             cout << "LIBRE" << endl;
-
             _posicion = LIBRE;
         }
         if (ir_frontal < DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
@@ -92,8 +91,10 @@ void MyRobot::run()
             cout << "PAR_DER" << endl;
 
             _posicion = PAR_DER;
+            pared_der = 1;
+            pared_iz = 0;
         }
-        if (ir_frontal > DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
+        if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
         {
             cout << "ESQ_IZ" << endl;
 
@@ -113,7 +114,8 @@ void MyRobot::run()
             break;
 
         case PAR_FRONT:
-            turn_left();
+            turn_right();
+
             break;
 
         case ESQ_DER:
@@ -125,7 +127,19 @@ void MyRobot::run()
             break;
 
         case LIBRE:
-            forward();
+            if (pared_der == 1)
+            {
+                turn_right();
+            }
+            else if (pared_iz == 1)
+            {
+                turn_left();
+            }
+            else
+            {
+
+                forward();
+            }
             break;
 
         case PAR_DER:
@@ -201,14 +215,14 @@ void MyRobot::set_speed()
 void MyRobot::turn_left()
 {
     cout << "Turn left" << endl;
-    _left_speed = MAX_SPEED - 8;
-    _right_speed = MAX_SPEED - 6;
+    _left_speed = MAX_SPEED - 6;
+    _right_speed = MAX_SPEED;
 }
 void MyRobot::turn_right()
 {
     cout << "Turn right" << endl;
-    _left_speed = MAX_SPEED - 6;
-    _right_speed = MAX_SPEED - 8;
+    _left_speed = MAX_SPEED;
+    _right_speed = MAX_SPEED - 6;
 }
 
 void MyRobot::get_info()
