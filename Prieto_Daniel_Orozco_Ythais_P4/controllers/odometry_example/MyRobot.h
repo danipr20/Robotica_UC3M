@@ -8,7 +8,7 @@
  * @author  Raul Perula-Martinez <raul.perula@uc3m.es>
  * @author  Alvaro Castro-Gonzalez <acgonzal@ing.uc3m.es>
  * @author  Javier Pastor Fernandez <javpasto@ing.uc3m.es>
- * @date    2021-12 
+ * @date    2021-12
  */
 
 #include <iostream>
@@ -22,15 +22,15 @@
 using namespace std;
 using namespace webots;
 
-#define MAX_SPEED       10
+#define MAX_SPEED 10
 
-#define WHEELS_DISTANCE 0.32   //[=] meters
-#define WHEEL_RADIUS    0.0825 //[=] meters
+#define WHEELS_DISTANCE 0.3206 //[=] meters
+#define WHEEL_RADIUS 0.0825    //[=] meters
 
-#define ENCODER_TICS_PER_RADIAN 2
+#define ENCODER_TICS_PER_RADIAN 1
 
-
-class MyRobot : public Robot {
+class MyRobot : public Robot
+{
 public:
     /**
      * @brief Empty constructor of the class.
@@ -59,52 +59,50 @@ public:
      * @return true if the robot has reached the goal established for this controller; false otherwise.
      */
     bool goal_reached();
-    
+
+    void calculo_inc();
 
 private:
     int _time_step;
 
     // velocities
     double _left_speed, _right_speed;
-        
-    float _x, _y, _x_goal, _y_goal;   // [=] meters
-    float _theta, _theta_goal;   // [=] rad
-    
-    float _sr, _sl;  // [=] meters
+
+    float _x, _y, _x_goal, _y_goal, _x_ant, _y_ant, _theta_ant; // [=] meters
+    float _theta, _theta_goal, _theta_compas;                   // [=] rad
+
+    float _sr, _sl, _sr_ant, _sl_ant, _inc_sr, _inc_sl; // [=] meters
 
     // Motor Position Sensor
-    PositionSensor* _left_wheel_sensor;
-    PositionSensor* _right_wheel_sensor;
+    PositionSensor *_left_wheel_sensor;
+    PositionSensor *_right_wheel_sensor;
 
-    
     // Compass sensor
-    Compass * _my_compass;
+    Compass *_my_compass;
 
     // Motors
-    Motor* _left_wheel_motor;
-    Motor* _right_wheel_motor;
+    Motor *_left_wheel_motor;
+    Motor *_right_wheel_motor;
 
-
-	/**
-        * @brief Updates the odometry of the robot in meters and radians. The atributes _x, _y, _theta are updated.
-        */
+    /**
+     * @brief Updates the odometry of the robot in meters and radians. The atributes _x, _y, _theta are updated.
+     */
     void compute_odometry();
-        
- 	/**
-        * @brief Computes orientation of the robot in degrees based on the information from the compass         * 
-        * @return orientation of the robot in degrees 
-        */       
+
+    /**
+     * @brief Computes orientation of the robot in degrees based on the information from the compass         *
+     * @return orientation of the robot in degrees
+     */
+
     double convert_bearing_to_degrees();
     /**
-         * @brief Prints in the standard output the x,y,theta coordinates of the robot. 
-         * This method uses the encoder resolution and the wheel radius defined in the model of the robot.
-         * 
-         * @param tics raw value read from an encoder
-         * @return meters corresponding to the tics value 
-         */
+     * @brief Prints in the standard output the x,y,theta coordinates of the robot.
+     * This method uses the encoder resolution and the wheel radius defined in the model of the robot.
+     *
+     * @param tics raw value read from an encoder
+     * @return meters corresponding to the tics value
+     */
     float encoder_tics_to_meters(float tics);
-        
 };
 
 #endif
-
