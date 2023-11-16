@@ -8,8 +8,8 @@ WorldInfo {
   title "Pioneer 2"
 }
 Viewpoint {
-  orientation 0.003587532378729051 0.920899942639744 0.38978253585499156 3.158544050567889
-  position -0.34113298181955665 23.864762960732154 -23.72174041589133
+  orientation -0.02171330615577887 0.8782202253130396 0.47776329723713556 3.2141947210644646
+  position -2.839050474866541 21.721338700265015 -15.284004918477443
 }
 Background {
   skyColor [
@@ -425,12 +425,9 @@ DEF FLOOR Solid {
   }
   locked TRUE
 }
-Pole {
-  translation -3 0 3
-}
 Pioneer2 {
-  translation 0.010154054461432123 0 -8.569397030663884
-  rotation 0 -1 0 3.14
+  translation 0 0 -9.03
+  rotation 0 1 0 3.141592653589793
   controller "odometry_example"
   extensionSlot [
     Compass {
@@ -438,4 +435,7 @@ Pioneer2 {
     GPS {
     }
   ]
+}
+Pole {
+  translation -3 0 3
 }

@@ -878,6 +878,8 @@ Pioneer2 {
   rotation 0 1 0 3.141592653589793
   controller "obstacle_avoidance"
   extensionSlot [
+    GPS {
+    }
     Compass {
     }
     DEF SPHERICAL_CAMERA Camera {

@@ -21,10 +21,10 @@ MyRobot::MyRobot() : Robot()
   _left_speed = 0;
   _right_speed = 0;
 
-  _x = _y = _theta, _x_ant, _y_ant, _theta_ant = 0.0; // robot pose variables
+  _x = _y = _theta = _x_ant = _y_ant = _theta_ant = 0.0; // robot pose variables
   _sr = _sl = _sl_ant = _sr_ant = 0.0;                // displacement right and left wheels
 
-  _x_goal = 8, _y_goal = 0,
+  _x_goal = 7.99582, _y_goal = 0,
   _theta_goal = atan2((_y_goal - _y), (_x_goal - _x)); // target pose
 
   // Motor Position Sensor initialization
@@ -77,7 +77,7 @@ void MyRobot::run()
   cout << "Goal --> y: " << _y_goal << endl;
   cout << "Goal --> Theta: " << _theta_goal << endl;
 
-  _left_speed = MAX_SPEED - 1;
+  _left_speed = MAX_SPEED;
   _right_speed = MAX_SPEED;
 
   // set the motor speeds
@@ -86,17 +86,23 @@ void MyRobot::run()
 
   while (step(_time_step) != -1)
   {
-    _sl = _left_wheel_sensor->getValue();
-    _sr = _right_wheel_sensor->getValue();
+  const double *compass_val = _my_compass->getValues();
+
+        // convert compass bearing vector to angle, in degrees
+        compass_angle = convert_bearing_to_degrees2(compass_val);
+
+        // print sensor values to console
+        cout << "Compass angle (degrees): " << compass_angle << endl;
+        
+    _sl = encoder_tics_to_meters(_left_wheel_sensor->getValue());
+    _sr = encoder_tics_to_meters(_right_wheel_sensor->getValue());
 
     cout << "Left encoder: " << _sl << endl;
     cout << "Right encoder: " << _sr << endl;
 
     this->compute_odometry();
     this->print_odometry();
-
-    if (this->goal_reached())
-      break;
+    this->goal_reached();
   }
 }
 
@@ -107,8 +113,8 @@ void MyRobot::compute_odometry()
   _inc_sr = _sr - _sr_ant;
 
   _theta = _theta_ant + (_inc_sr - _inc_sl) / WHEELS_DISTANCE;
-  _x = _x_ant + ((_inc_sr + _inc_sl) / (2 * WHEELS_DISTANCE)) * cos(_theta + ((_inc_sr - _inc_sl) / 2 * WHEELS_DISTANCE));
-  _y = _y_ant + ((_inc_sr + _inc_sl) / (2 * WHEELS_DISTANCE)) * sin(_theta + ((_inc_sr - _inc_sl) / 2 * WHEELS_DISTANCE));
+  _x = _x_ant + ((_inc_sr + _inc_sl) / (2) * cos(_theta + ((_inc_sr - _inc_sl) / (2 * WHEELS_DISTANCE))));
+  _y = _y_ant + ((_inc_sr + _inc_sl) / (2) * sin(_theta + ((_inc_sr - _inc_sl) / (2 * WHEELS_DISTANCE))));
 
   _x_ant = _x;
   _y_ant = _y;
@@ -116,6 +122,7 @@ void MyRobot::compute_odometry()
 
   _sl_ant = _sl;
   _sr_ant = _sr;
+  
 }
 //////////////////////////////////////////////
 
@@ -140,18 +147,30 @@ float MyRobot::encoder_tics_to_meters(float tics)
 void MyRobot::print_odometry()
 {
   cout << "x:" << _x << " y:" << _y << " theta:" << _theta << endl;
+  cout << _x_goal<<endl;
 }
 
 //////////////////////////////////////////////
 
 bool MyRobot::goal_reached()
 {
-  // function to be completed by students
-  // ...
-
+ if(_x >_x_goal)
+ {
+    _left_wheel_motor->setVelocity(0);
+  _right_wheel_motor->setVelocity(0);
+      cout<<"Mu bien majo"<<endl<<endl;
+  return true;}
   return false;
 }
 //////////////////////////////////////////////
 void MyRobot::calculo_inc()
 {
+}
+
+double MyRobot::convert_bearing_to_degrees2(const double* in_vector)
+{
+    double rad = atan2(in_vector[0], in_vector[2]);
+    double deg = rad * (180.0 / M_PI);
+
+    return deg;
 }
