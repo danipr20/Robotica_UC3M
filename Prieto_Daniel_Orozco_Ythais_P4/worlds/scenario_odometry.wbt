@@ -1,4 +1,4 @@
-#VRML_SIM R2019a utf8
+#VRML_SIM R2019b utf8
 WorldInfo {
   info [
     "The model of the Pioneer 2 robot"
@@ -8,8 +8,8 @@ WorldInfo {
   title "Pioneer 2"
 }
 Viewpoint {
-  orientation -0.08404934421013259 0.8752001566809744 0.4764036035584161 2.986702895265825
-  position -0.258613695851305 12.5788158940228 -14.031372014536938
+  orientation -0.08509251159240826 0.8108004317669772 0.5791044157294774 3.029445864420684
+  position -0.14418105858761754 35.83657025249717 -16.213103080540428
 }
 Background {
   skyColor [
@@ -452,7 +452,7 @@ DEF FLOOR Solid {
   locked TRUE
 }
 Pioneer2 {
-  translation 0 0 -9.03
+  translation 0.87 0 -9.03
   rotation 0 1 0 3.141592653589793
   controller "odometry_example"
   extensionSlot [

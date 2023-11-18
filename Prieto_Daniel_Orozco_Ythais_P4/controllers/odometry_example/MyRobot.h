@@ -77,9 +77,7 @@ private:
     float _theta, _theta_goal, _theta_compas; // [=] rad
 
     float _sr, _sl, _sr_ant, _sl_ant, _inc_sr, _inc_sl; // [=] meters
-
-    bool modo_giro_derecha;
-
+    
     // Motor Position Sensor
     PositionSensor *_left_wheel_sensor;
     PositionSensor *_right_wheel_sensor;

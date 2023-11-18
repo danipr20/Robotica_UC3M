@@ -23,8 +23,7 @@ MyRobot::MyRobot() : Robot()
 
   _x = _y = _theta = _x_ant = _y_ant = _theta_ant = ir_frontal = 0.0; // robot pose variables
   _sr = _sl = _sl_ant = _sr_ant = 0.0;                                // displacement right and left wheels
-  modo_giro_derecha = false;
-  _x_goal = 7.99582, _y_goal = 0,
+  _x_goal = 16.4, _y_goal = 0,
   _theta_goal = atan2((_y_goal - _y), (_x_goal - _x)); // target pose
 
   // Motor Position Sensor initialization
@@ -110,25 +109,27 @@ void MyRobot::run()
     cout << "Left encoder: " << _sl << endl;
     cout << "Right encoder: " << _sr << endl;
 
-    if (ir_frontal > 200 && _y == 0)
+    if (ir_frontal > 200)
     {
-      modo_giro_derecha = true;
       cout << "Modo giro TRUE " << endl;
+
+
+
+
+      _left_speed = MAX_SPEED - 9;
+      _right_speed = MAX_SPEED - 11;
+    
     }
 
-    while (modo_giro_derecha == true)
+    if (ir_frontal < 200)
     {
 
-      _left_wheel_motor->setVelocity(_left_speed);
-      _right_wheel_motor->setVelocity(_right_speed - 20);
-      if (_theta < 10 && _theta > -10)
-      {
-        _left_wheel_motor->setVelocity(_left_speed);
-        _right_wheel_motor->setVelocity(_right_speed);
-        modo_giro_derecha = false;
-        cout << "Modo giro FALSE?????????" << endl;
-      }
-    };
+      _left_speed = MAX_SPEED;
+      _right_speed = MAX_SPEED;
+    }
+
+    _left_wheel_motor->setVelocity(_left_speed);
+    _right_wheel_motor->setVelocity(_right_speed);
 
     this->goal_reached();
   }
