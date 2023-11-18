@@ -21,9 +21,9 @@ MyRobot::MyRobot() : Robot()
   _left_speed = 0;
   _right_speed = 0;
 
-  _x = _y = _theta = _x_ant = _y_ant = _theta_ant = 0.0; // robot pose variables
-  _sr = _sl = _sl_ant = _sr_ant = 0.0;                // displacement right and left wheels
-
+  _x = _y = _theta = _x_ant = _y_ant = _theta_ant = ir_frontal = 0.0; // robot pose variables
+  _sr = _sl = _sl_ant = _sr_ant = 0.0;                                // displacement right and left wheels
+  modo_giro_derecha = false;
   _x_goal = 7.99582, _y_goal = 0,
   _theta_goal = atan2((_y_goal - _y), (_x_goal - _x)); // target pose
 
@@ -53,6 +53,9 @@ MyRobot::MyRobot() : Robot()
   // Set motor velocity to 0
   _right_wheel_motor->setVelocity(0.0);
   _left_wheel_motor->setVelocity(0.0);
+
+  _distance_sensor[0] = getDistanceSensor("ds0");
+  _distance_sensor[0]->enable(_time_step);
 }
 
 //////////////////////////////////////////////
@@ -67,6 +70,8 @@ MyRobot::~MyRobot()
   _my_compass->disable();
   _left_wheel_sensor->disable();
   _right_wheel_sensor->disable();
+
+  _distance_sensor[0]->disable();
 }
 
 //////////////////////////////////////////////
@@ -76,6 +81,7 @@ void MyRobot::run()
   cout << "Goal --> x: " << _x_goal << endl;
   cout << "Goal --> y: " << _y_goal << endl;
   cout << "Goal --> Theta: " << _theta_goal << endl;
+  cout << "Inicio ir frontal= " << ir_frontal << endl;
 
   _left_speed = MAX_SPEED;
   _right_speed = MAX_SPEED;
@@ -86,22 +92,44 @@ void MyRobot::run()
 
   while (step(_time_step) != -1)
   {
-  const double *compass_val = _my_compass->getValues();
+    ir_frontal = _distance_sensor[0]->getValue();
+    const double *compass_val = _my_compass->getValues();
 
-        // convert compass bearing vector to angle, in degrees
-        compass_angle = convert_bearing_to_degrees2(compass_val);
+    // convert compass bearing vector to angle, in degrees
+    compass_angle = convert_bearing_to_degrees2(compass_val);
+    this->compute_odometry();
+    this->print_odometry();
 
-        // print sensor values to console
-        cout << "Compass angle (degrees): " << compass_angle << endl;
-        
+    // print sensor values to console
+    cout << "Compass angle (degrees): " << compass_angle << endl
+         << "IR_FRONTAL=" << ir_frontal << endl;
+
     _sl = encoder_tics_to_meters(_left_wheel_sensor->getValue());
     _sr = encoder_tics_to_meters(_right_wheel_sensor->getValue());
 
     cout << "Left encoder: " << _sl << endl;
     cout << "Right encoder: " << _sr << endl;
 
-    this->compute_odometry();
-    this->print_odometry();
+    if (ir_frontal > 200 && _y == 0)
+    {
+      modo_giro_derecha = true;
+      cout << "Modo giro TRUE " << endl;
+    }
+
+    while (modo_giro_derecha == true)
+    {
+
+      _left_wheel_motor->setVelocity(_left_speed);
+      _right_wheel_motor->setVelocity(_right_speed - 20);
+      if (_theta < 10 && _theta > -10)
+      {
+        _left_wheel_motor->setVelocity(_left_speed);
+        _right_wheel_motor->setVelocity(_right_speed);
+        modo_giro_derecha = false;
+        cout << "Modo giro FALSE?????????" << endl;
+      }
+    };
+
     this->goal_reached();
   }
 }
@@ -122,7 +150,6 @@ void MyRobot::compute_odometry()
 
   _sl_ant = _sl;
   _sr_ant = _sr;
-  
 }
 //////////////////////////////////////////////
 
@@ -147,30 +174,29 @@ float MyRobot::encoder_tics_to_meters(float tics)
 void MyRobot::print_odometry()
 {
   cout << "x:" << _x << " y:" << _y << " theta:" << _theta << endl;
-  cout << _x_goal<<endl;
+  cout << _x_goal << endl;
 }
 
 //////////////////////////////////////////////
 
 bool MyRobot::goal_reached()
 {
- if(_x >_x_goal)
- {
+  if (_x > _x_goal)
+  {
     _left_wheel_motor->setVelocity(0);
-  _right_wheel_motor->setVelocity(0);
-      cout<<"Mu bien majo"<<endl<<endl;
-  return true;}
+    _right_wheel_motor->setVelocity(0);
+    cout << "Mu bien majo" << endl
+         << endl;
+    return true;
+  }
   return false;
 }
 //////////////////////////////////////////////
-void MyRobot::calculo_inc()
-{
-}
 
-double MyRobot::convert_bearing_to_degrees2(const double* in_vector)
+double MyRobot::convert_bearing_to_degrees2(const double *in_vector)
 {
-    double rad = atan2(in_vector[0], in_vector[2]);
-    double deg = rad * (180.0 / M_PI);
+  double rad = atan2(in_vector[0], in_vector[2]);
+  double deg = rad * (180.0 / M_PI);
 
-    return deg;
+  return deg;
 }

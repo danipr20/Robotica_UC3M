@@ -17,6 +17,8 @@
 #include <webots/PositionSensor.hpp>
 #include <webots/Keyboard.hpp>
 #include <webots/Compass.hpp>
+#include <webots/DistanceSensor.hpp>
+
 #include <math.h>
 
 using namespace std;
@@ -28,6 +30,7 @@ using namespace webots;
 #define WHEEL_RADIUS 0.0825    //[=] meters
 
 #define ENCODER_TICS_PER_RADIAN 1
+#define NUM_DISTANCE_SENSOR 16
 
 class MyRobot : public Robot
 {
@@ -67,13 +70,15 @@ private:
     double compass_angle;
 
     // velocities
-    double _left_speed, _right_speed;
+    double _left_speed, _right_speed, ir_frontal;
 
     float _x, _y, _x_goal, _y_goal, _x_ant, _y_ant, _theta_ant; // [=] meters
-    
-    float _theta, _theta_goal, _theta_compas;                   // [=] rad
+
+    float _theta, _theta_goal, _theta_compas; // [=] rad
 
     float _sr, _sl, _sr_ant, _sl_ant, _inc_sr, _inc_sl; // [=] meters
+
+    bool modo_giro_derecha;
 
     // Motor Position Sensor
     PositionSensor *_left_wheel_sensor;
@@ -81,6 +86,7 @@ private:
 
     // Compass sensor
     Compass *_my_compass;
+    DistanceSensor *_distance_sensor[NUM_DISTANCE_SENSOR];
 
     // Motors
     Motor *_left_wheel_motor;
@@ -105,7 +111,7 @@ private:
      * @return meters corresponding to the tics value
      */
     float encoder_tics_to_meters(float tics);
-    double convert_bearing_to_degrees2(const double* in_vector);
+    double convert_bearing_to_degrees2(const double *in_vector);
 };
 
 #endif
