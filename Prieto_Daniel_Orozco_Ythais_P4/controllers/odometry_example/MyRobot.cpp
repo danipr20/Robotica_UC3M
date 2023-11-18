@@ -118,7 +118,7 @@ void MyRobot::run()
 
     while (modo_giro_derecha == true)
     {
-
+cout <<"Entro bucle, modo_giro_derecha== " << modo_giro_derecha <<endl;
       _left_wheel_motor->setVelocity(_left_speed);
       _right_wheel_motor->setVelocity(_right_speed - 20);
       if (_theta < 10 && _theta > -10)
