@@ -85,7 +85,7 @@ private:
     // Compass sensor
     Compass *_my_compass;
     DistanceSensor *_distance_sensor[NUM_DISTANCE_SENSOR];
-
+    GPS * _my_gps;
     // Motors
     Motor *_left_wheel_motor;
     Motor *_right_wheel_motor;

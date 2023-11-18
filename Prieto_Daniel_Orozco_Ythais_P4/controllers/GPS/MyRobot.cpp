@@ -55,6 +55,11 @@ MyRobot::MyRobot() : Robot()
 
   _distance_sensor[0] = getDistanceSensor("ds0");
   _distance_sensor[0]->enable(_time_step);
+
+  // GPS
+  //  Get robot's GPS; initialize it
+  _my_gps = getGPS("gps");
+  _my_gps->enable(_time_step);
 }
 
 //////////////////////////////////////////////
@@ -91,6 +96,10 @@ void MyRobot::run()
 
   while (step(_time_step) != -1)
   {
+    // OBTENER GPS
+    float _x = _my_gps->getValues()[2];
+    float _y = _my_gps->getValues()[0];
+
     ir_frontal = _distance_sensor[0]->getValue();
     const double *compass_val = _my_compass->getValues();
 
