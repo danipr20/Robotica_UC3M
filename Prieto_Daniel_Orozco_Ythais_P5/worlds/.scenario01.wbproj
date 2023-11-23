@@ -7,6 +7,6 @@ centralWidgetVisible: 1
 selectionDisabled: 0
 viewpointLocked: 0
 orthographicViewHeight: 1
-textFiles: 1 "controllers/Wall_detector/MyRobot.cpp" "controllers/Wall_detector/MyRobot.h" "controllers/Wall_detector/wall_detector.cpp"
+textFiles: 2 "controllers/Wall_detector/MyRobot.cpp" "controllers/Wall_detector/MyRobot.h" "controllers/Wall_detector/wall_detector.cpp"
 renderingDevicePerspectives: Pioneer 2:camera_s;1;1;0.0363371;0.0795307
 renderingDevicePerspectives: Pioneer 2:camera_f;1;1.86875;0.0136288;0.599739
