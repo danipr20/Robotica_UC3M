@@ -21,7 +21,12 @@
 using namespace std;
 using namespace webots;
 
-#define THRESHOLD 110
+#define THRESHOLD 80
+#define ama 200
+
+
+
+
 
 class MyRobot : public Robot {
     public:
@@ -43,6 +48,7 @@ class MyRobot : public Robot {
          * @param
          * @return
          */
+
         void run();
         
     private:

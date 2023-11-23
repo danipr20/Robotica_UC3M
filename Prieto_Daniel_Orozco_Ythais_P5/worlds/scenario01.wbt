@@ -9,7 +9,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.01772919591950181 -0.7688417362836818 -0.6391932885757963 2.9851375560200926
-  position -1.0919487521916067 23.200426327437803 -14.550050735699736
+  position 0.7071767844124521 34.110076414984675 -3.6659874642333663
 }
 Background {
   skyColor [
@@ -874,15 +874,10 @@ DEF FLOOR Solid {
   locked TRUE
 }
 Pioneer2 {
-  translation 0 0 -9.05
+  translation -0.21 0 -0.73
   rotation 0 1 0 3.141592653589793
-  controller "Wall_detector"
+  controller "Lines_detector"
   extensionSlot [
-    PointLight {
-      attenuation 0 0 1
-      intensity 0.2
-      location 0 0.3 0
-    }
     Compass {
     }
     DEF SPHERICAL_CAMERA Camera {
