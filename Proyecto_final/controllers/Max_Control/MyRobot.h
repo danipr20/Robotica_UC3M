@@ -30,7 +30,7 @@ using namespace webots;
 #define NUM_DISTANCE_SENSOR 16
 #define DISTANCE_LIMIT 200
 
-#define DISTANCIA_CHOQUE 950
+#define DISTANCIA_CHOQUE 50
 
 
 #define WHEELS_DISTANCE 0.3606 //[=] meters
@@ -79,17 +79,18 @@ public:
 
     // Metodos publicos
     void forward();
-    void set_speed();
     void get_info();
     void stop();
-    void turn_left_90();
-    void turn_right_90();
+    void turn_left();
+    void turn_right();
     void esquivar();
     void seguir_pared_derecha();
     void seguir_pared_izquierda();
     void desbloquear();
     void backward();
-
+    void seguir_contorno();
+    
+    
 private:
     // Atributos Generales
     int _time_step;
@@ -100,7 +101,6 @@ private:
     double _left_speed, _right_speed;
 
     // Atributos odometria
-    double ir_frontal;
 
     float _x, _y, _x_goal, _y_goal, _x_ant, _y_ant, _theta_ant; // [=] meters
 
@@ -109,8 +109,14 @@ private:
     float _sr, _sl, _sr_ant, _sl_ant, _inc_sr, _inc_sl; // [=] meters
 
     // WORKING MODES
-    int _posicion = 0;
-
+    int _posicion;
+    
+    double compass_angle;
+    double ir_frontal, ir_izq, ir_der;
+    int i;
+    bool pared_iz;
+    bool pared_der;
+    
     // Metodos privados (sensores)
     void compute_odometry();
     void print_odometry();
@@ -118,6 +124,14 @@ private:
     double convert_bearing_to_degrees();
     float encoder_tics_to_meters(float tics);
     double convert_bearing_to_degrees2(const double *in_vector);
+
+
+    //Modos/estados
+    bool modo_girar_derecha;
+    bool comienza_paso_2;
+    bool comienza_paso_3;
+    bool comienza_paso_4;
+    bool comienza_paso_5;
 
     // Inicializar Sensors
     // Compass
