@@ -5,10 +5,7 @@
 MyRobot::MyRobot() : Robot()
 {
     // init default values
-    Robot *robot = new Robot();
-
-    int _time_step = (int)robot->getBasicTimeStep();
-
+    _time_step = 64;
     // Variables odometria
     _x = _y = _theta = _x_ant = _y_ant = _theta_ant = ir_frontal = 0.0; // robot pose variables
     _sr = _sl = _sl_ant = _sr_ant = 0.0;                                // displacement right and left wheels
@@ -96,126 +93,105 @@ void MyRobot::run()
         get_info();
         cout << " Ir_der : " << ir_der << "Ir_frontal: " << ir_frontal << " Ir_izq: " << ir_izq << endl;
 
-        if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
-        {
-            cout << "BLOQUEO" << endl;
-            _posicion = BLOQUEO;
-        }
-        if (ir_frontal > DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
-        {
-            cout << "ESQ_DERERECHA_LIBRE" << endl;
-            _posicion = ESQ_DER;
-        }
-        if (ir_frontal < DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
-        {
-            cout << "PAR_IZQUIERDA" << endl;
-            _posicion = PAR_IZ;
-            pared_der = 0;
-            pared_iz = 1;
-        }
-        if (ir_frontal < DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
-        {
-            cout << "LIBRE" << endl;
-            _posicion = LIBRE;
-        }
-        if (ir_frontal < DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
-        {
-            cout << "PAR_DER" << endl;
+        turn_left_90();
 
-            _posicion = PAR_DER;
-            pared_der = 1;
-            pared_iz = 0;
-        }
-        if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
+        for (int i = 0; i < 5; i++)
         {
-            cout << "ESQ_IZ" << endl;
-
-            _posicion = ESQ_IZ;
-        }
-        if (ir_frontal > DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
-        {
-            cout << "PAR_FRONT" << endl;
-
-            _posicion = PAR_FRONT;
+            cout << "Stop'" << endl;
+            stop();
         }
 
-        switch (_posicion)
-        {
-        case BLOQUEO:
-            turn_left();
-            break;
+        /*
+                if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
+                {
+                    cout << "BLOQUEO" << endl;
+                    _posicion = BLOQUEO;
+                }
+                if (ir_frontal > DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
+                {
+                    cout << "ESQ_DERERECHA_LIBRE" << endl;
+                    _posicion = ESQ_DER;
+                }
+                if (ir_frontal < DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq > DISTANCE_LIMIT)
+                {
+                    cout << "PAR_IZQUIERDA" << endl;
+                    _posicion = PAR_IZ;
+                    pared_der = 0;
+                    pared_iz = 1;
+                }
+                if (ir_frontal < DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
+                {
+                    cout << "LIBRE" << endl;
+                    _posicion = LIBRE;
+                }
+                if (ir_frontal < DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
+                {
+                    cout << "PAR_DER" << endl;
 
-        case PAR_FRONT:
-            turn_right();
+                    _posicion = PAR_DER;
+                    pared_der = 1;
+                    pared_iz = 0;
+                }
+                if (ir_frontal > DISTANCE_LIMIT && ir_der > DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
+                {
+                    cout << "ESQ_IZ" << endl;
 
-            break;
+                    _posicion = ESQ_IZ;
+                }
+                if (ir_frontal > DISTANCE_LIMIT && ir_der < DISTANCE_LIMIT && ir_izq < DISTANCE_LIMIT)
+                {
+                    cout << "PAR_FRONT" << endl;
 
-        case ESQ_DER:
-            turn_right();
-            break;
+                    _posicion = PAR_FRONT;
+                }
 
-        case PAR_IZ:
-            forward();
-            break;
+                switch (_posicion)
+                {
+                case BLOQUEO:
+                    turn_left();
+                    break;
 
-        case LIBRE:
-            if (pared_der == 1)
-            {
-                turn_right();
-            }
-            else if (pared_iz == 1)
-            {
-                turn_left();
-            }
-            else
-            {
+                case PAR_FRONT:
+                    turn_right();
 
-                forward();
-            }
-            break;
+                    break;
 
-        case PAR_DER:
-            forward();
-            break;
+                case ESQ_DER:
+                    turn_right();
+                    break;
 
-        case ESQ_IZ:
-            turn_left();
-            break;
+                case PAR_IZ:
+                    forward();
+                    break;
 
-        default:
-            cout << "ERROR DE CONTEMPACION" << endl;
-            break;
-        }
-        /*  if ((ir_der < DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE && ir_izq < DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE))
-          {
-              // movimiento de frente, ninguna pared cerca o pared a la izquierda
-              cout << "Moving forward" << endl;
-              _left_speed = MAX_SPEED;
-              _right_speed = MAX_SPEED;
-          }
-          if (ir_izq > DISTANCIA_CHOQUE)
-          {
-              pared_iz = 1;
-              pared_der = 0;
-          }
-          if (ir_der > DISTANCIA_CHOQUE)
-          {
-              pared_der = 1;
-              pared_iz = 0;
-          }
+                case LIBRE:
+                    if (pared_der == 1)
+                    {
+                        turn_right();
+                    }
+                    else if (pared_iz == 1)
+                    {
+                        turn_left();
+                    }
+                    else
+                    {
 
-          if (ir_izq < DISTANCIA_CHOQUE && pared_iz == 1)
-          {
-              // esquina hacia la izquierda, antes detectaba pared y ahora no
-          }
+                        forward();
+                    }
+                    break;
 
-          if ((ir_der > DISTANCIA_CHOQUE) || (ir_frontal > DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal > DISTANCIA_CHOQUE))
-          {
-              // gira a la derecha
-              cout << "Turn right" << endl;
-              _left_speed = MAX_SPEED - 9;
-              _right_speed = MAX_SPEED - 11;
-          }*/
+                case PAR_DER:
+                    forward();
+                    break;
+
+                case ESQ_IZ:
+                    turn_left();
+                    break;
+
+                default:
+                    cout << "ERROR DE CONTEMPACION" << endl;
+                    break;
+                }*/
 
         // set the motor speeds
         set_speed();
@@ -248,17 +224,21 @@ void MyRobot::forward()
     _right_speed = MAX_SPEED;
 }
 
-void MyRobot::turn_left()
+void MyRobot::turn_left_90()
 {
-    cout << "Turn left" << endl;
-    _left_speed = MAX_SPEED - 6;
-    _right_speed = MAX_SPEED;
+    for (int h = 0; h < 100; h++)
+    {
+        cout << "Turn left" << endl;
+        _left_speed = -MAX_SPEED + 8;
+        _right_speed = MAX_SPEED - 8;
+        set_speed();
+    }
 }
-void MyRobot::turn_right()
+void MyRobot::turn_right_90()
 {
     cout << "Turn right" << endl;
-    _left_speed = MAX_SPEED;
-    _right_speed = MAX_SPEED - 6;
+    _left_speed = MAX_SPEED - 9;
+    _right_speed = -MAX_SPEED + 9;
 }
 
 void MyRobot::set_speed()
@@ -275,7 +255,7 @@ void MyRobot::stop()
 }
 void MyRobot::esquivar()
 {
-    turn_right();
+    turn_right_90();
     seguir_contorno();
 }
 void MyRobot::seguir_contorno()
@@ -353,5 +333,51 @@ double MyRobot::convert_bearing_to_degrees2(const double *in_vector)
     double deg = rad * (180.0 / M_PI);
 
     return deg;
+}
+
+void seguir_pared_derecha()
+{
+    if ((ir_der < DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE && ir_izq < DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE))
+    {
+        // movimiento de frente, ninguna pared cerca o pared a la izquierda
+        cout << "Moving forward" << endl;
+        _left_speed = MAX_SPEED;
+        _right_speed = MAX_SPEED;
+    }
+    if (ir_izq > DISTANCIA_CHOQUE)
+    {
+        pared_iz = 1;
+        pared_der = 0;
+    }
+    if (ir_der > DISTANCIA_CHOQUE)
+    {
+        pared_der = 1;
+        pared_iz = 0;
+    }
+
+    if (ir_izq < DISTANCIA_CHOQUE && pared_iz == 1)
+    {
+        // esquina hacia la izquierda, antes detectaba pared y ahora no
+
+        cout << "Turn left" << endl;
+        _left_speed = MAX_SPEED - 8;
+        _right_speed = MAX_SPEED - 6;
+    }
+
+    if ((ir_der > DISTANCIA_CHOQUE) || (ir_frontal > DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal > DISTANCIA_CHOQUE))
+    {
+        // gira a la derecha
+        cout << "Turn right" << endl;
+        _left_speed = MAX_SPEED - 9;
+        _right_speed = MAX_SPEED - 11;
+    }
+
+    // set the motor position to non-stop moving
+    _left_wheel_motor->setPosition(_infinity);
+    _right_wheel_motor->setPosition(_infinity);
+
+    // set the motor speeds
+    _left_wheel_motor->setVelocity(_left_speed);
+    _right_wheel_motor->setVelocity(_right_speed);
 }
 /////////////////////////////////////////////////

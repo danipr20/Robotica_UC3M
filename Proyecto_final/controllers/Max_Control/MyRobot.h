@@ -30,6 +30,9 @@ using namespace webots;
 #define NUM_DISTANCE_SENSOR 16
 #define DISTANCE_LIMIT 200
 
+#define DISTANCIA_CHOQUE 950
+
+
 #define WHEELS_DISTANCE 0.3606 //[=] meters
 #define WHEEL_RADIUS 0.0825    //[=] meters
 #define ENCODER_TICS_PER_RADIAN 1
@@ -79,10 +82,11 @@ public:
     void set_speed();
     void get_info();
     void stop();
-    void turn_left();
-    void turn_right();
+    void turn_left_90();
+    void turn_right_90();
     void esquivar();
-    void seguir_contorno();
+    void seguir_pared_derecha();
+    void seguir_pared_izquierda();
     void desbloquear();
     void backward();
 
