@@ -20,7 +20,9 @@ MyRobot::MyRobot() : Robot()
     i = 0;
     pared_iz = 0;
     pared_der = 0;
-    
+    girando=0;     
+    persona_detectada=0;
+
     //modos/pasos
     comienza_paso_2=0;
     comienza_paso_3=0;
@@ -42,9 +44,9 @@ MyRobot::MyRobot() : Robot()
     // Iniciar Sensores de Distancia
     _distance_sensor[0] = getDistanceSensor("ds0");
     _distance_sensor[0]->enable(_time_step);
-    _distance_sensor[1] = getDistanceSensor("ds3");
+    _distance_sensor[1] = getDistanceSensor("ds2");
     _distance_sensor[1]->enable(_time_step);
-    _distance_sensor[2] = getDistanceSensor("ds13");
+    _distance_sensor[2] = getDistanceSensor("ds14");
     _distance_sensor[2]->enable(_time_step);
 
     // Iniciar Encoders
@@ -119,30 +121,55 @@ void MyRobot::run()
        if (_x<1  && compass_angle<-20 && !comienza_paso_2){
        turn_right();
        cout << "condicion giro"<<endl;
-       if(compass_angle>=-26){comienza_paso_2=1; cout <<"manda orden"<<endl;}
+       if(compass_angle>=-26 ){comienza_paso_2=1; cout <<"manda orden"<<endl;}
        }
        cout<<"paso 2 estado: "<<comienza_paso_2<<endl;
        
        
-       //fase 2
+       //fase 2 sigueparedes derecha
        if(comienza_paso_2 && !comienza_paso_3){
        cout<<"ejecuta paso 2 seguir derecha"<<endl;
       seguir_pared_derecha();
-      if(_x>=7){comienza_paso_3=1;}}
+      if(_x>=10/*6.3  funciona en mundos 1,4,...*/){comienza_paso_3=1;}}
       
+      
+      
+      
+      //Fase 3 intentamos sortear la zona central y llegamos a la izquierda
       if(comienza_paso_3){
        cout<<"ejecuta paso 3 stop"<<endl;
-       stop();
-      if(_x>=7){comienza_paso_4=1;}
+       cout<<"girando= "<<girando<<endl;
+       
+         if (_y<0 && compass_angle>=-125 && girando==0){
+       turn_left();
+       cout<<"left"<<endl;
+            }
+       else{forward();  girando=1 ;       }
+        if(_y>=3.8){comienza_paso_4=1;}
+
+     /* if(_x>=12){comienza_paso_4=1;}*/
       }
      
+            //Estamos en la izquierda, comenzamos el sigueparedes
+
       if(comienza_paso_4){
        cout<<"ejecuta paso 2 seguir derecha"<<endl;
       seguir_pared_izquierda();
-      if(_x>=20){comienza_paso_3=1;}}      
+      if(_x>=19){comienza_paso_5=1;}}      
       
+      //Busqueda de personas
+       if(comienza_paso_5){
+       cout<<"Comienza la busqueda de personas"<<endl;
+      seguir_pared_izquierda();
+      if (persona_detectada){dar_vuelta();}
+      if(_x<=18){seguir_pared_derecha();}
+      }   
      //  else{cout<<"error de condiciones"<<endl;}
-       
+       //Busqueda de personas
+       if(comienza_paso_5){
+       cout<<"ejecuta paso 2 seguir derecha"<<endl;
+      seguir_pared_izquierda();
+      if(_x>=20){comienza_paso_5=1;}}  
  
        
        
@@ -382,5 +409,9 @@ void MyRobot::seguir_pared_derecha()
       }
 
 
+}
+
+void MyRobot::dar_vuelta(){
+//falta completar
 }
 /////////////////////////////////////////////////

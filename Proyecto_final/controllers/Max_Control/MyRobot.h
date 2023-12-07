@@ -89,6 +89,7 @@ public:
     void desbloquear();
     void backward();
     void seguir_contorno();
+    void dar_vuelta();
     
     
 private:
@@ -116,6 +117,8 @@ private:
     int i;
     bool pared_iz;
     bool pared_der;
+    bool girando;
+    bool persona_detectada; //Falta implementar
     
     // Metodos privados (sensores)
     void compute_odometry();
