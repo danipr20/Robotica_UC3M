@@ -2,7 +2,7 @@
 
 //////////////////////////////////////////////
 
-MyRobot::MyRobot() : Robot()
+Robot::Robot() : Robot()
 {
     // init default values
     _time_step = 64;
@@ -21,27 +21,19 @@ MyRobot::MyRobot() : Robot()
     pared_iz = 0;
     pared_der = 0;
     girando=0;     
+    persona_detectada=0;
 
-    //Inicializar variables para deteccion de personas.
-    persona1_detectada = 0;
-    persona1_evitada = 0;
-    persona2_detectada = 0;
-    
-    //Configuramos el color verde
-    posX[0]= 0;
-    posX[1]= 0;
-    posY[0]= 0;
-    posY[1]= 0;
-    rango = 0;
-    rango1=0;
 
     //modos/pasos
     comienza_paso_2=0;
     comienza_paso_3=0;
     comienza_paso_4=0;
-    comienza_paso_5=0;
-    comienzo_vuelta_casa=0;
 
+ comienza_paso_5=0;
+
+
+    
+    
 
     // set mode to fordward
     _posicion = LIBRE;
@@ -77,7 +69,7 @@ MyRobot::MyRobot() : Robot()
 
 //////////////////////////////////////////////
 
-MyRobot::~MyRobot()
+Robot::~Robot()
 {
     // disable devices
 
@@ -97,16 +89,12 @@ MyRobot::~MyRobot()
 
 //////////////////////////////////////////////
 
-void MyRobot::run()
+void Robot::run()
 {
 
     // set the motor position to non-stop moving
     _left_wheel_motor->setPosition(_infinity);
     _right_wheel_motor->setPosition(_infinity);
-    
-    //inicializamos variable de color enviada al robot
-    int image_width_f = _forward_camera->getWidth();
-    int image_height_f = _forward_camera->getHeight();
 
     while (step(_time_step) != -1)
     {
@@ -120,119 +108,69 @@ void MyRobot::run()
         _sr = encoder_tics_to_meters(_right_wheel_sensor->getValue());
         
         
+        
+        
         // convert compass bearing vector to angle, in degrees
         ir_frontal = _distance_sensor[0]->getValue();
         ir_izq = _distance_sensor[1]->getValue();
         ir_der = _distance_sensor[2]->getValue();
         get_info();
-
+        cout << " Ir_der : " << ir_der << "Ir_frontal: " << ir_frontal << " Ir_izq: " << ir_izq << endl;
+        cout << "Fase sensores completa" << endl;
+        
+       cout <<"angulo= " <<compass_angle<<endl;
        if (_x<1  && compass_angle<-20 && !comienza_paso_2){
        turn_right();
-
-       if(compass_angle>=-26 ){comienza_paso_2=1;}
+       cout << "condicion giro"<<endl;
+       if(compass_angle>=-26 ){comienza_paso_2=1; cout <<"manda orden"<<endl;}
        }
+       cout<<"paso 2 estado: "<<comienza_paso_2<<endl;
        
-       //fase 2 sigue paredes derecha
+       
+       //fase 2 sigueparedes derecha
        if(comienza_paso_2 && !comienza_paso_3){
        cout<<"ejecuta paso 2 seguir derecha"<<endl;
       seguir_pared_derecha();
-      if(_x>=9.2/*6.3  funciona en mundos 1,4,...*/){comienza_paso_3=1;}}
+      if(_x>=10/*6.3  funciona en mundos 1,4,...*/){comienza_paso_3=1;}}
+      
+      
+      
       
       //Fase 3 intentamos sortear la zona central y llegamos a la izquierda
-      if(comienza_paso_3 && !comienza_paso_4){
-       cout<<"ejecuta paso 3"<<endl;
-    
-         if (_y<-1.7 && compass_angle>=-125 && girando==0){
+      if(comienza_paso_3){
+       cout<<"ejecuta paso 3 stop"<<endl;
+       cout<<"girando= "<<girando<<endl;
+       
+         if (_y<0 && compass_angle>=-125 && girando==0){
        turn_left();
+       cout<<"left"<<endl;
             }
-       else{girando=1 ;  
-       if(_y<=-1.1){seguir_pared_izquierda(); }
-        
-       if(_y>=-1.1 && compass_angle>=-140){forward();}
-            }
-        if(_y>=2){comienza_paso_4=1;}
+       else{forward();  girando=1 ;       }
+        if(_y>=3.8){comienza_paso_4=1;}
 
      /* if(_x>=12){comienza_paso_4=1;}*/
       }
      
             //Estamos en la izquierda, comenzamos el sigueparedes
 
-      if(comienza_paso_4 && !comienza_paso_5){
-       cout<<"ejecuta paso 4 seguir derecha"<<endl;
+      if(comienza_paso_4){
+       cout<<"ejecuta paso 2 seguir derecha"<<endl;
       seguir_pared_izquierda();
-      if(_x>=18){comienza_paso_5=1;}}      
+      if(_x>=19){comienza_paso_5=1;}}      
       
-      
+      //Busqueda de personas
+       if(comienza_paso_5){
+       cout<<"Comienza la busqueda de personas"<<endl;
+      seguir_pared_izquierda();
+      if (persona_detectada){dar_vuelta();}
+      if(_x<=18){seguir_pared_derecha();}
+      }   
+     //  else{cout<<"error de condiciones"<<endl;}
        //Busqueda de personas
-       if(comienza_paso_5==1 && persona1_detectada == 0 && _x<=18.5){
-       cout<<"ejecuta paso 5 seguir izquierda " <<endl;
-      
-      forward();} //antes era segui_pared_izquierda sin condicion de _x
-      
-      if(comienza_paso_5==1 && persona1_detectada == 0 && _x>17){
-       cout<<"ejecuta paso 5 siguiente " <<endl;
-      
+       if(comienza_paso_5){
+       cout<<"ejecuta paso 2 seguir derecha"<<endl;
       seguir_pared_izquierda();
-      salida++;
-      cout<< "salida: " << salida <<endl;
-      if(salida >= 30 && salida <= 70){forward();}
-      
-      }
-      //cout << "Size of forward camera image: " << image_width_f << ", " <<  image_height_f << endl;
-      if (rango<31 && _x>=17.5 && detectar_color(_forward_camera->getImage(), image_width_f, image_height_f)) {
-      salida=0;
-      persona1_detectada = 1;
-      
-      cout<<"persona 1 detectada: " << persona1_detectada <<endl;
-      
-      if(rango<3) //fijamos la posicion encontrada de inicio a fin de la persona 1
-      {
-      posX[0]=_x;
-      posY[0]=_y;
-      posY[1]=posY[0]-2; //desde donde esta hacia delante
-      if(_x<20){
-      posX[1]=posX[0]+0.25;}
-      if(_x>21){
-      posX[1]=posX[0]-0.25;}
-      }
-      rango++;
-      
-      _left_speed = MAX_SPEED - 9;
-      _right_speed = -MAX_SPEED + 9;
-    
-      }
-      
-      cout<<"rango: "<< rango << " rango1: " << rango1 <<endl;
-      if( persona2_detectada == 0 && comienza_paso_5 && persona1_detectada == 1 && rango >= 31)
-      {
-      seguir_pared_izquierda();
-      cout <<"Persona 1 detectada"<<endl;
-      //si esta por salir del area sin detectar a persona 2
-      if(_x <=17 && persona2_detectada==0){
-      backward();
-      turn_left();
-      cout<< "retrocede y busca"<<endl;}
-      }
-      if (rango1<28 && _y < posY[1] && persona1_detectada==1 && detectar_color(_forward_camera->getImage(), image_width_f, image_height_f)){
-      
-      persona2_detectada = 1;
-      
-      cout<<"persona 2 detectada: " << persona2_detectada <<endl;
-      
-      rango1++;
-      
-      _left_speed = MAX_SPEED - 9;
-      _right_speed = -MAX_SPEED + 9;
-      }
-      
-      if(comienza_paso_5==1 && persona2_detectada == 1 && rango1 >= 28)
-      {
-      cout <<"Todas las personas encontradas"<<endl;
-      comienzo_vuelta_casa=1;}
-
-      if(comienzo_vuelta_casa==1){seguir_pared_izquierda();}
-      
-      
+      if(_x>=20){comienza_paso_5=1;}}  
  
        
        
@@ -245,7 +183,7 @@ void MyRobot::run()
 /////////////////////////////
 // METODOS DE CALCULO
 
-double MyRobot::convert_bearing_to_degrees(const double *in_vector)
+double Robot::convert_bearing_to_degrees(const double *in_vector)
 {
     double rad = atan2(in_vector[0], in_vector[2]);
     double deg = rad * (180.0 / M_PI);
@@ -255,9 +193,9 @@ double MyRobot::convert_bearing_to_degrees(const double *in_vector)
 
 void MyRobot::get_info()
 {
-cout << " Ir_der : " << ir_der << "Ir_frontal: " << ir_frontal << " Ir_izq: " << ir_izq << " angulo compass: "<<compass_angle<<endl;
 }
 
+/////////////////////////////////
 
 //////////////////////////
 // METODOS DE MOVIMIENTO
@@ -271,6 +209,7 @@ void MyRobot::forward()
 void MyRobot::turn_left()
 {
 
+    cout << "Turn left " << endl;
     _left_speed = -MAX_SPEED + 9;
     _right_speed = MAX_SPEED - 9;
 
@@ -278,7 +217,7 @@ void MyRobot::turn_left()
 
 void MyRobot::turn_right()
 {
-
+    cout << "Turn right" << endl;
     _left_speed = MAX_SPEED - 9;
     _right_speed = -MAX_SPEED + 9;
 }
@@ -346,7 +285,7 @@ float MyRobot::encoder_tics_to_meters(float tics)
 void MyRobot::print_odometry()
 {
     cout << "x:" << _x << " y:" << _y << " theta:" << _theta << endl;
-    //cout << _x_goal << endl;
+    cout << _x_goal << endl;
 }
 
 bool MyRobot::goal_reached()
@@ -355,7 +294,8 @@ bool MyRobot::goal_reached()
     {
         _left_wheel_motor->setVelocity(0);
         _right_wheel_motor->setVelocity(0);
-        
+        cout << "Mu bien majo" << endl
+             << endl;
         return true;
     }
     return false;
@@ -375,8 +315,9 @@ void MyRobot::seguir_pared_izquierda()
      if (( ir_der < DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE && ir_izq < DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE))
      {
          // movimiento de frente, ninguna pared cerca o pared a la izquierda
-         _left_speed = MAX_SPEED-1;
-         _right_speed = MAX_SPEED-1;
+         cout << "Moving forward" << endl;
+         _left_speed = MAX_SPEED-5;
+         _right_speed = MAX_SPEED-5;
 
      }
      if ( ir_izq > DISTANCIA_CHOQUE)
@@ -397,8 +338,9 @@ void MyRobot::seguir_pared_izquierda()
      {
          // esquina hacia la izquierda, antes detectaba pared y ahora no
 
-          _left_speed = -MAX_SPEED + 9;
-        _right_speed = MAX_SPEED - 8;
+         cout << "Turn left" << endl;
+          _left_speed = -MAX_SPEED + 9.2;
+        _right_speed = MAX_SPEED - 9.2;
 
      }
      
@@ -406,7 +348,8 @@ void MyRobot::seguir_pared_izquierda()
      if (( ir_der > DISTANCIA_CHOQUE) || (ir_frontal > DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal > DISTANCIA_CHOQUE))
       {
           // gira a la derecha
-    _left_speed = MAX_SPEED - 9;
+          cout << "Turn right" << endl;
+    _left_speed = MAX_SPEED - 9.2;
     _right_speed = -MAX_SPEED + 9.2;
 
       }
@@ -418,13 +361,14 @@ void MyRobot::seguir_pared_izquierda()
 
 void MyRobot::seguir_pared_derecha()
 {
+
      if (( ir_der < DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE && ir_izq < DISTANCIA_CHOQUE) || (ir_izq > DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE) || (ir_der > DISTANCIA_CHOQUE && ir_frontal < DISTANCIA_CHOQUE))
      {
          // movimiento de frente, ninguna pared cerca o pared a la izquierda
          
-         _left_speed = MAX_SPEED-1;
-         _right_speed = MAX_SPEED-1;
-
+         _left_speed = MAX_SPEED-5;
+         _right_speed = MAX_SPEED-5;
+         cout << "Moving forward" << _left_speed <<" "<< _right_speed<< endl;
 
      }
      if ( ir_der > DISTANCIA_CHOQUE)
@@ -445,8 +389,9 @@ void MyRobot::seguir_pared_derecha()
      {
          // esquina hacia la derecha, antes detectaba pared y ahora no
 
-    _left_speed = MAX_SPEED - 8;
-    _right_speed = -MAX_SPEED + 9;
+         cout << "Turn 4" << endl;
+    _left_speed = MAX_SPEED - 9.5;
+    _right_speed = -MAX_SPEED + 9.5;
 
      }
      
@@ -454,39 +399,20 @@ void MyRobot::seguir_pared_derecha()
      if (( ir_izq > DISTANCIA_CHOQUE) || (ir_frontal > DISTANCIA_CHOQUE) || (ir_der > DISTANCIA_CHOQUE && ir_frontal > DISTANCIA_CHOQUE))
       {
           // gira a la izquierda
+          cout << "Turn 5" << endl;
 
-        _left_speed = -MAX_SPEED + 9;
-        _right_speed = MAX_SPEED - 9;
+
+
+
+
+        _left_speed = -MAX_SPEED + 9.2;
+        _right_speed = MAX_SPEED - 9.2;
       }
 
 
 }
 
-//nuevo metodo de deteccion definido
-bool MyRobot::detectar_color(const unsigned char *image, int width, int height)
-{
-    int sum = 0;
-    unsigned char red, green, blue;
-    double percentage_color = 0.0;
-
-    for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
-            green = _forward_camera->imageGetGreen(image, width, x, y);
-            red = _forward_camera->imageGetRed(image, width, x, y);
-            blue = _forward_camera->imageGetBlue(image, width, x, y);
-            // Verificar si el píxel está cerca del color objetivo (verde)
-            if (abs(red) < THRESHOLD &&
-                abs(green) > THRESHOLD &&
-                abs(blue) < THRESHOLD) {
-                sum = sum + 1;
-            }
-        }
-    }
-
-    percentage_color = (sum / (float)(width * height)) * 100;
-    cout << "Percentage of color in image: " << percentage_color << " sum: " << sum << endl;
-
-    return (percentage_color > DETECTION_THRESHOLD);
+void MyRobot::dar_vuelta(){
+//falta completar
 }
-
-/////
+/////////////////////////////////////////////////

@@ -36,6 +36,9 @@ using namespace webots;
 #define WHEELS_DISTANCE 0.3606 //[=] meters
 #define WHEEL_RADIUS 0.0825    //[=] meters
 #define ENCODER_TICS_PER_RADIAN 1
+//para detectar color
+#define THRESHOLD 110
+#define DETECTION_THRESHOLD 4
 
 enum Posicion
 {
@@ -128,13 +131,27 @@ private:
     float encoder_tics_to_meters(float tics);
     double convert_bearing_to_degrees2(const double *in_vector);
 
+//Funcion para detectar color:
+    bool detectar_color(const unsigned char *image, int width, int height);
 
+   // Para detectar personas
+    bool persona1_detectada;
+    bool persona1_evitada;
+    bool persona2_detectada;
+    double posX[2];
+    double posY[2];
+    int rango;
+    int rango1;
+    int salida;
+    
     //Modos/estados
     bool modo_girar_derecha;
     bool comienza_paso_2;
     bool comienza_paso_3;
     bool comienza_paso_4;
     bool comienza_paso_5;
+    bool comienzo_vuelta_casa;
+
 
     // Inicializar Sensors
     // Compass
@@ -145,7 +162,6 @@ private:
     // Motor Position Sensor
     PositionSensor *_left_wheel_sensor;
     PositionSensor *_right_wheel_sensor;
-
     // Camera sensors
     Camera *_forward_camera;
     Camera *_spherical_camera;

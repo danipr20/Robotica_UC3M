@@ -66,7 +66,7 @@
 ### VERBOSE = 1
 ###
 ###-----------------------------------------------------------------------------
-CXX_SOURCES = MyRobot.cpp Max_Control.cpp
+
 ### Do not modify: this includes Webots global Makefile.include
 space :=
 space +=

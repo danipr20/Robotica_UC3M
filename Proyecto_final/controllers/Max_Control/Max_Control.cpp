@@ -1,4 +1,3 @@
-
 #include "MyRobot.h"
 
 /**
@@ -8,9 +7,10 @@ int main(int argc, char** argv)
 {
     MyRobot* my_robot = new MyRobot();
 
-    my_robot->run();
+    my_robot-> run();
 
     delete my_robot;
 
     return 0;
 }
+
